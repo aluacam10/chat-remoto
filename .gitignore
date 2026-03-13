@@ -1,0 +1,18 @@
+# Node
+node_modules/
+
+# Python
+.venv/
+__pycache__/
+
+# certificados
+certs/
+
+# archivos del sistema
+.DS_Store
+Thumbs.db
+
+# builds
+dist/
+build/
+

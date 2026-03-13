@@ -1,0 +1,206 @@
+╔═══════════════════════════════════════════════════════════════════════════╗
+║                    CHAT LOCAL - CHECKLIST DE EJECUCIÓN                    ║
+╚═══════════════════════════════════════════════════════════════════════════╝
+
+📌 ANTES DE EMPEZAR (Solo primera vez)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+☐ Instalar Node.js 18+
+    Comando: node -v
+    
+☐ Instalar Python 3.11+
+    Comando: python --version
+    
+☐ Instalar XAMPP (para MySQL)
+    URL: https://www.apachefriends.org/
+    
+☐ Instalar Chocolatey y mkcert
+    En PowerShell (Admin):
+choco install mkcert -y
+mkcert -install
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+
+📌 CONFIGURACIÓN INICIAL (Solo primera vez)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. OBTENER IP LAN
+☐ Ejecutar: ipconfig
+☐ Anotar IPv4: ___.___.___.___
+Tu IP actual: 192.168.1.72
+
+2. GENERAR CERTIFICADOS SSL
+☐ cd c:\Users\reric\OneDrive\Documentos\chat-main
+☐ mkdir certs
+☐ mkcert -key-file certs\local-key.pem -cert-file certs\local.pem 192.168.1.72 localhost
+☐ Verificar: dir certs
+Debes ver: local.pem y local-key.pem
+
+3. CONFIGURAR BASE DE DATOS
+☐ Abrir Panel XAMPP → Start MySQL
+☐ Ir a: http://localhost/phpmyadmin
+☐ Ejecutar archivo: database.sql
+☐ Verificar tablas: users, chats, chat_members, messages
+
+4. CONFIGURAR BACKEND
+☐ cd backend
+☐ python -m venv .venv
+☐ .\.venv\Scripts\activate
+☐ pip install -r requirements.txt
+☐ copy .env.example .env
+☐ notepad .env  →  Verificar credenciales MySQL
+
+5. CONFIGURAR FRONTEND
+☐ cd frontend
+☐ npm install
+☐ copy .env.example .env
+☐ notepad .env  →  VITE_WS_URL=wss://192.168.1.72:8765
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+
+📌 INICIAR APLICACIÓN (Cada vez que la uses)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+PASO 1: Iniciar MySQL
+☐ Abrir Panel de Control XAMPP
+☐ Click "Start" en MySQL
+☐ Verificar que diga "Running" en verde
+
+PASO 2: Iniciar Backend
+☐ Abrir PowerShell/CMD
+☐ Ejecutar:
+
+cd c:\Users\reric\OneDrive\Documentos\chat-main\backend
+start.bat
+
+O manualmente:
+
+       .\.venv\Scripts\activate
+       python server.py
+       
+☐ Verificar mensaje: "WS server: wss://0.0.0.0:8765"
+☐ ¡DEJAR CORRIENDO!
+
+PASO 3: Iniciar Frontend
+☐ Abrir OTRA PowerShell/CMD
+☐ Ejecutar:
+   
+       cd c:\Users\reric\OneDrive\Documentos\chat-main\frontend
+       start.bat
+       
+     O manualmente:
+     
+       npm run dev
+       
+   ☐ Verificar mensaje: "Local: https://localhost:5173/"
+   ☐ ¡DEJAR CORRIENDO!
+
+PASO 4: Abrir en Navegador
+   ☐ Abrir Chrome/Firefox
+   ☐ Ir a: https://localhost:5173
+   
+     O desde tu IP LAN:
+     
+     https://192.168.1.72:5173
+     
+   ☐ Click "Avanzado" → "Continuar de todos modos" (normal con cert local)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+
+📌 PROBAR FUNCIONALIDAD
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+   ☐ Registrar usuario 1: juan / 123456
+   ☐ Abrir ventana incógnito
+   ☐ Registrar usuario 2: maria / 123456
+   ☐ Desde juan: Click "+" → Chat directo → Buscar "maria"
+   ☐ Enviar mensaje → Debe verse en ambos lados
+   ☐ Click ícono video → Permitir cámara/micrófono
+   ☐ En ventana María: Aceptar llamada
+   ☐ ¡Videollamada funcionando! 🎥
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+
+📌 ACCESO DESDE MÓVIL (Misma red WiFi)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+   ☐ Conectar móvil a misma red WiFi que PC
+   ☐ Abrir navegador en móvil
+   ☐ Ir a: https://192.168.1.72:5173
+   ☐ Aceptar certificado
+   ☐ Registrarse y chatear
+
+Si no funciona:
+   ☐ Abrir puertos en firewall:
+   
+       New-NetFirewallRule -DisplayName "Chat Backend" -Direction Inbound -LocalPort 8765 -Protocol TCP -Action Allow
+       New-NetFirewallRule -DisplayName "Chat Frontend" -Direction Inbound -LocalPort 5173 -Protocol TCP -Action Allow
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+
+📌 SOLUCIÓN RÁPIDA DE PROBLEMAS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+❌ Backend no arranca
+   → Verificar MySQL corriendo en XAMPP
+   → Activar entorno: .\.venv\Scripts\activate
+   → Revisar credenciales en backend\.env
+
+❌ Frontend error WS
+   → Verificar backend corriendo
+   → Revisar IP en frontend\.env
+   → Reiniciar frontend: Ctrl+C y npm run dev
+
+❌ No conecta desde móvil
+   → Usar IP LAN (no localhost)
+   → Abrir puertos en firewall (ver arriba)
+   → PC y móvil en misma red WiFi
+
+❌ Cámara no funciona
+   → Usar HTTPS (candado en navegador)
+   → Permitir permisos en navegador
+   → Cerrar Zoom, Teams, etc.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+
+📌 DETENER APLICACIÓN
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+   1. En terminal del frontend: Ctrl + C
+   2. En terminal del backend: Ctrl + C
+   3. En XAMPP: Stop MySQL (opcional)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+
+📌 INFORMACIÓN DE PUERTOS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+   Servicio         Puerto    URL
+   ──────────────   ──────    ──────────────────────────────
+   Backend WS       8765      wss://192.168.1.72:8765
+   Frontend Dev     5173      https://192.168.1.72:5173
+   MySQL            3306      localhost:3306
+   phpMyAdmin       80        http://localhost/phpmyadmin
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+
+📚 RECURSOS ADICIONALES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+   📄 GUIA_INSTALACION.md  →  Guía completa detallada
+   📄 INICIO_RAPIDO.md     →  Comandos de inicio rápido
+   📄 README.md            →  Información general del proyecto
+   📄 backend/README.md    →  Arquitectura del backend
+   📄 frontend/README.md   →  Arquitectura del frontend
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+                          ✓ ¡Todo listo para chatear! 💬🎥
