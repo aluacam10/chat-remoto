@@ -16,14 +16,8 @@ HOST = os.getenv("HOST", "0.0.0.0")
 PORT = int(os.environ.get("PORT", "10000"))
 LOG_WS_DISCONNECTS = os.getenv("LOG_WS_DISCONNECTS", "0") == "1"
 
-# SSL / WSS (mkcert)
-SSL_CERT = os.getenv("SSL_CERT", "").strip()
-SSL_KEY = os.getenv("SSL_KEY", "").strip()
-
+# SSL desactivado para Render
 ssl_context = None
-if SSL_CERT and SSL_KEY:
-    ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
-    ssl_context.load_cert_chain(SSL_CERT, SSL_KEY)
 
 # --- sesiones ---
 ws_to_user: Dict[websockets.WebSocketServerProtocol, str] = {}
