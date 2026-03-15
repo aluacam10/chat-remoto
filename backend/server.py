@@ -13,7 +13,7 @@ import protocol
 load_dotenv()
 
 HOST = os.getenv("HOST", "0.0.0.0")
-PORT = int(os.getenv("PORT", "8765"))
+PORT = int(os.environ.get("PORT", "10000"))
 LOG_WS_DISCONNECTS = os.getenv("LOG_WS_DISCONNECTS", "0") == "1"
 
 # SSL / WSS (mkcert)
@@ -390,7 +390,7 @@ async def router(ws, msg: dict):
     await send(ws, "error", {"message": f"Evento no soportado: {t}"})
 
 
-async def handler(ws):
+async def handler(ws, path):
     try:
         async for raw in ws:
             try:
