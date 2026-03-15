@@ -384,7 +384,7 @@ async def router(ws, msg: dict):
     await send(ws, "error", {"message": f"Evento no soportado: {t}"})
 
 
-async def handler(ws, path):
+async def handler(ws, path=None):
     try:
         async for raw in ws:
             try:
