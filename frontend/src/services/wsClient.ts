@@ -8,6 +8,19 @@ function isLocalHost(hostname: string) {
   return LOCAL_HOSTS.has(hostname);
 }
 
+function isPrivateIpv4(hostname: string) {
+  if (!/^\d+\.\d+\.\d+\.\d+$/.test(hostname)) return false;
+  const [a, b] = hostname.split(".").map(Number);
+  if (a === 10) return true;
+  if (a === 172 && b >= 16 && b <= 31) return true;
+  if (a === 192 && b === 168) return true;
+  return false;
+}
+
+function isLanLikeHost(hostname: string) {
+  return isLocalHost(hostname) || isPrivateIpv4(hostname) || hostname.endsWith(".local");
+}
+
 function resolveWsUrl(configured: string): string {
   if (typeof window === "undefined") {
     return configured || "ws://localhost:8765";
@@ -26,10 +39,11 @@ function resolveWsUrl(configured: string): string {
     const configuredProtocol = parsed.protocol === "wss:" || parsed.protocol === "ws:" ? parsed.protocol : pageProtocol;
     const hasExplicitPort = parsed.port.length > 0;
 
-    // Si la app se abre por IP/host de red y el .env quedó con una IP vieja,
-    // priorizamos el host actual de la página para evitar logins rotos en móvil.
+    // Solo reemplaza host cuando el configurado sea local/LAN.
+    // Si VITE_WS_URL apunta a dominio público, debe respetarse tal cual.
     const shouldUsePageHost =
       !isLocalHost(pageHost) &&
+      isLanLikeHost(configuredHost) &&
       configuredHost !== pageHost;
 
     const finalHost = shouldUsePageHost ? pageHost : configuredHost;
